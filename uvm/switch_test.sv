@@ -13,12 +13,12 @@ class switch_base_test extends uvm_test;
   endfunction
 
   task run_phase(uvm_phase phase);
-    switch_random_sequence sequence =
+    switch_random_sequence seq =
         switch_random_sequence::type_id::create("random_sequence");
 
     phase.raise_objection(this);
-    sequence.count = 256;
-    sequence.start(env.seqr);
+    seq.count = 256;
+    seq.start(env.seqr);
 
     // Let the final accepted transaction propagate through the combinational
     // fabric and monitors before check_phase inspects scoreboard queues.
@@ -36,12 +36,12 @@ class switch_hotspot_test extends switch_base_test;
   endfunction
 
   task run_phase(uvm_phase phase);
-    switch_hotspot_sequence sequence =
+    switch_hotspot_sequence seq =
         switch_hotspot_sequence::type_id::create("hotspot_sequence");
 
     phase.raise_objection(this);
-    sequence.count = 192;
-    sequence.hotspot = 2;
+    seq.count = 192;
+    seq.hotspot = 2;
     sequence.start(env.seqr);
     repeat (10) @(posedge env.drv.vif.clk);
     phase.drop_objection(this);
