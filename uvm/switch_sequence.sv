@@ -1,0 +1,2 @@
+class switch_random_sequence extends uvm_sequence #(switch_item); `uvm_object_utils(switch_random_sequence) rand int unsigned count=200; task body(); repeat(count) begin req=switch_item::type_id::create("req"); start_item(req); assert(req.randomize()); finish_item(req); end endtask endclass
+class switch_hotspot_sequence extends uvm_sequence #(switch_item); `uvm_object_utils(switch_hotspot_sequence) task body(); repeat(128) begin req=switch_item::type_id::create("hot"); start_item(req); assert(req.randomize() with {dst==2;}); finish_item(req); end endtask endclass
