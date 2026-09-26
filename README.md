@@ -21,10 +21,10 @@ random/hotspot sequences → driver → DUT → monitor ─┬→ scoreboard
 - constrained-random source, destination, payload and stall behavior
 - directed hotspot sequence to force arbitration conflicts
 - reusable `uvm_sequence_item` transaction
-- driver/monitor separation
+- separate accepted-input and output monitors
 - analysis-port fanout
-- scoreboard packet accounting
-- source × destination cross coverage
+- end-to-end scoreboard with per-destination expected queues
+- source × destination cross coverage sampled from accepted traffic
 - stall-cycle coverage bins
 - SystemVerilog Assertions for output-valid stability under backpressure
 - simulator targets for Questa, VCS and Xcelium
@@ -39,7 +39,9 @@ make vcs TEST=switch_hotspot_test
 make xrun TEST=switch_base_test
 ```
 
-Open-source CI validates the synthesizable RTL with Verilator and runs a small Python reference model. Full UVM execution requires a simulator with IEEE 1800.2/UVM support.
+Open-source CI now does three things: lints the synthesizable RTL, runs the Python reference model, **and builds/runs the UVM testbench with Verilator 5.052 plus the Verilator-compatible UVM library**. The same environment still has Make targets for Questa, VCS, and Xcelium.
+
+Verilator 5.052 added UVM 2020-3.2 support, so this repository uses that open-source path as a real regression rather than treating UVM as documentation-only.
 
 ## DUT behavior
 
