@@ -42,7 +42,7 @@ class switch_hotspot_test extends switch_base_test;
     phase.raise_objection(this);
     seq.count = 192;
     seq.hotspot = 2;
-    sequence.start(env.seqr);
+    seq.start(env.seqr);
     repeat (10) @(posedge env.drv.vif.clk);
     phase.drop_objection(this);
   endtask
