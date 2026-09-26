@@ -19,26 +19,18 @@ jobs:
 
   uvm-verilator:
     runs-on: ubuntu-24.04
-    timeout-minutes: 30
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
-      - name: Build Verilator 5.052
+
+      - name: Fetch Verilator-compatible UVM 2020 library
         run: |
-          sudo apt-get update
-          sudo apt-get install -y autoconf bison flex libfl-dev help2man z3
-          git clone --depth 1 --branch v5.052 https://github.com/verilator/verilator.git /tmp/verilator
-          cd /tmp/verilator
-          autoconf
-          ./configure
-          make -j2
-          sudo make install
-          verilator --version
-      - name: Fetch UVM 2020 library with Verilator compatibility
+          git clone --depth 1 https://github.com/verilator/uvm.git /tmp/uvm
+
+      - name: Run random UVM regression in Verilator container
         run: |
-          git clone --depth 1 https://github.com/chipsalliance/uvm-verilator.git /tmp/uvm-verilator
-      - name: Build and run random UVM regression
+          docker run --rm             -v "$PWD:/work"             -v "/tmp/uvm:/uvm:ro"             -w /work             verilator/verilator:latest             bash -lc 'verilator --version && make verilator-uvm TEST=switch_base_test UVM_HOME=/uvm/src'
+
+      - name: Run hotspot UVM regression in same toolchain
         run: |
-          make verilator-uvm TEST=switch_base_test UVM_HOME=/tmp/uvm-verilator/src
-      - name: Run hotspot UVM regression
-        run: |
-          ./obj_dir/simv +UVM_TESTNAME=switch_hotspot_test +UVM_VERBOSITY=UVM_LOW
+          docker run --rm             -v "$PWD:/work"             -v "/tmp/uvm:/uvm:ro"             -w /work             verilator/verilator:latest             bash -lc './obj_dir/simv +UVM_TESTNAME=switch_hotspot_test +UVM_VERBOSITY=UVM_LOW'
