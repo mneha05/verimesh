@@ -1,0 +1,1 @@
+interface switch_if #(parameter PORTS=4,WIDTH=32)(input logic clk); logic rst_n; logic [PORTS-1:0] in_valid; logic [PORTS-1:0][WIDTH-1:0] in_data; logic [PORTS-1:0][$clog2(PORTS)-1:0] in_dst; logic [PORTS-1:0] in_ready; logic [PORTS-1:0] out_valid; logic [PORTS-1:0][WIDTH-1:0] out_data; logic [PORTS-1:0] out_ready; endinterface
