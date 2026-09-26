@@ -24,13 +24,22 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Fetch Verilator-compatible UVM 2020 library
-        run: |
-          git clone --depth 1 https://github.com/verilator/uvm.git /tmp/uvm
+        run: git clone --depth 1 https://github.com/verilator/uvm.git /tmp/uvm
 
       - name: Run random UVM regression in Verilator container
         run: |
-          docker run --rm             -v "$PWD:/work"             -v "/tmp/uvm:/uvm:ro"             -w /work             verilator/verilator:latest             bash -lc 'verilator --version && make verilator-uvm TEST=switch_base_test UVM_HOME=/uvm/src'
+          docker run --rm --entrypoint /bin/bash \
+            -v "$PWD:/work" \
+            -v "/tmp/uvm:/uvm:ro" \
+            -w /work \
+            verilator/verilator:latest \
+            -lc 'verilator --version && make verilator-uvm TEST=switch_base_test UVM_HOME=/uvm/src'
 
       - name: Run hotspot UVM regression in same toolchain
         run: |
-          docker run --rm             -v "$PWD:/work"             -v "/tmp/uvm:/uvm:ro"             -w /work             verilator/verilator:latest             bash -lc './obj_dir/simv +UVM_TESTNAME=switch_hotspot_test +UVM_VERBOSITY=UVM_LOW'
+          docker run --rm --entrypoint /bin/bash \
+            -v "$PWD:/work" \
+            -v "/tmp/uvm:/uvm:ro" \
+            -w /work \
+            verilator/verilator:latest \
+            -lc './obj_dir/simv +UVM_TESTNAME=switch_hotspot_test +UVM_VERBOSITY=UVM_LOW'
